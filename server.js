@@ -81,6 +81,6 @@ class Forecast {
 // })
 
 server.get('*', (req, res) => {
-    res.status(200).send('Not Found!!!');
+    res.status(500).send('Not Found!!!');
 })
 
