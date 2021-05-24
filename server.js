@@ -14,31 +14,7 @@ server.listen(PORT, () => {
     console.log(`Listening to PORT ${PORT}`);
 })
 
-// http://localhost:3001/
-// server.get('/', (req, res) => {
-//     res.send('Home')
-// })
 
-// http://localhost:3001/weather
-// server.get('/weather',(req,res)=>{
-//    let locationName=weatherData.data.map(item=>{
-//     return item.city_name
-// })
-// // let locationLat=weatherData.data.map(item=>{
-// //     return item.lat
-// // })
-// // let locationLon=weatherData.data.map(item=>{
-// //     return item.lon
-// // })
-//     res.send(locationName);
-//     // res.send(locationLat);
-//     // res.send(locationLon);
-// })
-
-// server.get('/weather', (request, response) => {
-//     let str = 'Hello From back-end!!!';
-//     response.status(200).send(str);
-// })
 // http://localhost:3001/weather?locationName=amman
 server.get('/weather', (req, res) => {
     let locationNameData = req.query.locationName;
