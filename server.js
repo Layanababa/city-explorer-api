@@ -18,6 +18,8 @@ server.listen(PORT, () => {
 // http://localhost:3001/weather?locationName=amman
 server.get('/weather', (req, res) => {
     let locationNameData = req.query.locationName;
+    let lat='';
+    let lon='';
 
     let requiredLocation = ['amman', 'seattle', 'paris'];
 
@@ -25,16 +27,23 @@ server.get('/weather', (req, res) => {
 
         let locationItem = weatherData.find(item => {
             if (item.city_name.toLowerCase() == locationNameData)
-                
-            return item;
+                {
+                    locationNameData=item.city_name;
+                    lat=item.lat;
+                    lon=item.lon;
+                    return item;
+                }
+            
         })
         let locationArr = locationItem.data.map(item => {
             return new Forecast(item);
         })
+        locationArr.push({lat});
+        locationArr.push({lon});
         res.send(locationArr);
 
     } else {
-        res.send('Not Found!!!');
+        res.status(500).send('Not Found!!!');
     }
 
 
