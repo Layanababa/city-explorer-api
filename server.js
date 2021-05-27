@@ -39,23 +39,12 @@ async function weatherHandler(req, res) {
        
         let result=await axios.get(url);
             
-            let requiredLocation = ['amman', 'seattle', 'paris'];
-            if (!requiredLocation.includes(locationNameData.toLowerCase())) {
-            result = result.data.find(item => {
-                if (item.city_name.toLowerCase() == locationNameData)
-                    {
-                        locationNameData=item.city_name;
-                        lat=item.lat;
-                        lon=item.lon;
-                        return item;
-                    }
-                
-            })}
+            
             let locationArr = result.data.data.map(item => {
                 return new Forecast(item);
             })
-            locationArr.push({lat});
-            locationArr.push({lon});
+            // locationArr.push({lat});
+            // locationArr.push({lon});
             res.send(locationArr);
        
     }catch(err){
@@ -77,12 +66,16 @@ class Forecast {
     }
 }
 
+let imgUrl='https://image.tmdb.org/t/p/w500'
 class Movie{
     constructor(daily){
         this.title=daily.title;
         this.overview=daily.overview;
-        this.vote_average=daily.vote_average;
-        this.vote_count=daily.vote_count;
+        this.average_votes=daily.vote_average;
+        this.total_votes=daily.vote_count;
+        this.image_url= imgUrl+daily.poster_path;
+        this.popularity=daily.popularity;
+        this.released_on=daily.release_date
 
     }
 }
@@ -95,31 +88,20 @@ async function movieHandler(req, res) {
         // let lon='';
         let key= process.env.MOVIE_API_KEY;
    
-    let url=`https://api.themoviedb.org/3/search/movie?api_key=${key}&query=${movieNameData}`;
+    let url=`https://api.themoviedb.org/3/search/movie?api_key=${key}&query=${movieNameData}&page=1`;
 
    
     try{
        
         let result=await axios.get(url);
             
-            let requiredLocation = ['amman', 'seattle', 'paris'];
-            if (!requiredLocation.includes(movieNameData.toLowerCase())) {
-            let locationItem = result.results.find(item => {
-                if (item.title.toLowerCase() == movieNameData)
-                    {
-                        movieNameData=item.title;
-                        // lat=item.lat;
-                        // lon=item.lon;
-                        return item;
-                    }
-                
-            })}
-            let locationArr = result.data.results.map(item => {
+            
+            let movieArr = result.data.results.map(item => {
                 return new Movie(item);
             })
             // locationArr.push({lat});
             // locationArr.push({lon});
-            res.send(locationArr);
+            res.send(movieArr);
     //    res.send('movie')
     }catch(err){
     res.status(500).send(`Error in getting the movie data ==> ${err}`);
