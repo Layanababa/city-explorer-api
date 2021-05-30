@@ -8,40 +8,40 @@ let movieMemory = {};
 
 
 
-async function movieHandler(req, res) {
+function movieHandler(req, res) {
 
     let movieNameData = req.query.locationName;
-    // let lat='';
-    // let lon='';
+
+    console.log(movieNameData);
+    
     let key = process.env.MOVIE_API_KEY;
 
     let url = `https://api.themoviedb.org/3/search/movie?api_key=${key}&query=${movieNameData}&page=1`;
 
     if (movieMemory[movieNameData] !== undefined) {
-        console.log('get the data from the Memory')
-        res.send(movieMemory[movieNameData])
-    }
-
-    else {
-        console.log('get the data from the API');
-        try {
-
-            let result = await axios.get(url);
+        console.log(`Getting the data from the Memory`);
+        res.send(movieMemory[movieNameData]);
 
 
-            let movieArr = result.data.results.map(item => {
-                return new Movie(item);
+    } else {
+        
+        axios
+            .get(url)
+            .then(result => {
+                let movieArr = result.data.results.map(item => {
+                    return new Movie(item);
+                })
+                movieMemory[movieNameData] = movieArr;
+                console.log(`Getting the data from the API`);
+                res.send(movieArr);
             })
-            movieMemory[movieNameData] = movieArr;
-            // locationArr.push({lat});
-            // locationArr.push({lon});
-            res.send(movieArr);
-            //    res.send('movie')
-        } catch (err) {
-            res.status(500).send(`Error in getting the movie data ==> ${err}`);
-        }
+
+            .catch(err => {
+                
+                res.status(500).send(`Error in getting the movie data ==> ${err}`);
+            })
     }
-    
+
 }
 
 let imgUrl = 'https://image.tmdb.org/t/p/w500'
